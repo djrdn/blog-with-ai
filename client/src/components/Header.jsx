@@ -1,7 +1,7 @@
 import React from 'react'
 import { assets } from '../assets/assets'
 
-function Header() {
+const Header = () => {
   return (
     <div className='mx-8 sm:mx-16 xl:mx-24 relative' >
       <div className='text-center mt-20 mb-8'>
