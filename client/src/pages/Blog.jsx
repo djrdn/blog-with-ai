@@ -31,7 +31,16 @@ function Blog() {
         <p className='inline-block py-1 px-4 rounded-full mb-6 border text-sm border-primary/35 bg-primary/5 font-meduim text-primary'>Michael Brown</p>
       </div>
 
-      <div></div>
+      <div className='mx-5 max-w-5xl md:mx-auto my-10 mt-6'>
+        <img src={data.image} alt="" className='rounded-3xl mb-5'/>
+
+        <div className='rich-text max-w-3xl mx-auto' dangerouslySetInnerHTML={{__html: data.description}}></div>
+
+        {/* Comments */}
+        <div className='mt-14 mb-10 max-w-3xl mx-auto'>
+          <p>Comments</p>
+        </div>
+      </div>
 
 
     </div>
