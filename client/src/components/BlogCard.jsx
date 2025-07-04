@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
-function BlogCard({blog}) {
+const BlogCard = ({blog}) => {
 
     const {title, description, category, image, _id} = blog;
     const navigate = useNavigate()
