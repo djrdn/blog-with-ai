@@ -12,19 +12,29 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const connectDB = async () => {
   try {
-    // Вивід URI для перевірки
-    console.log('MONGODB_URI:', process.env.MONGODB_URI);
+    const mongoURI = `${process.env.MONGODB_URI}/quickblog`;
 
     mongoose.connection.on('connected', () => {
-      console.log('✅ Database Connected');
+      console.log('✅ MongoDB connected');
     });
 
-    const mongoURI = `${process.env.MONGODB_URI}/quickblog`;
-    await mongoose.connect(mongoURI);
+    mongoose.connection.on('error', (err) => {
+      console.error('❌ MongoDB connection error:', err);
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      console.log('⚠️ MongoDB disconnected');
+    });
+
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error.message);
+    console.error('❌ Connection failed:', error.message);
   }
 };
 
 export default connectDB;
+

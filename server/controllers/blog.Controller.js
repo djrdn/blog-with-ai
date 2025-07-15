@@ -3,46 +3,50 @@ import imagekit from '../configs/imageKit.js';
 import Blog from '../models/Blog.js'
 import Comment from '../models/Comment.js';
 
-export const addBlog = async (req, res)=>{
+export const addBlog = async (req, res) => {
+    console.log("🔥 addBlog() called");
+
     try {
-        const {title, subTitle, description, category, isPublished} = JSON.parse
-        (req.body.blog);
+        const { title, subTitle, description, category, isPublished } = JSON.parse(req.body.blog);
         const imageFile = req.file;
 
-        //Check if all fields are present
-        if(!title || !description || !category || !imageFile){
-            return res.json({success: false, message: "Missing required fields" })
+        console.log("📦 Input values:", {
+            title, subTitle, description, category, isPublished,
+            imageFileExists: !!imageFile,
+        });
 
+        if (!title ||  !description || !category || !imageFile) {
+            return res.json({ success: false, message: "Missing required fields" });
         }
 
-        const fileBuffer = fs.readFileSync(imageFile.path)       
+        const fileBuffer = fs.readFileSync(imageFile.path);
         const response = await imagekit.upload({
             file: fileBuffer,
             fileName: imageFile.originalname,
-            folder: "/blogs"
-        })
-        // optimization through imagekit url transformation
+            folder: "blogs"
+        });
+
         const optimizedImageURL = imagekit.url({
             path: response.filePath,
             transformation: [
-                {quality: 'auto'}, // auto compression
-                {format: 'webp'}, // convert to modern format
-                {width: '1280'} // width resizing
+                { quality: 'auto' },
+                { format: 'webp' },
+                { width: '1280' }
             ]
         });
 
         const image = optimizedImageURL;
 
-        await Blog.create({title, subTitle, description, category, image,
-        isPublished})
+        console.log("📥 Saving blog to DB...");
+        await Blog.create({ title, subTitle, description, category, image, isPublished });
 
-        res.json({success: true, message: "Blog added successfully"})
-
+        res.json({ success: true, message: "Blog added successfully" });
     } catch (error) {
-        res.json({success: false, message: error.message})
-        
+        console.error("❌ Error creating blog:", error);
+        res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 
 export const getAllBlogs = async (req, res)=>{
     try {
